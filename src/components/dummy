@@ -1,0 +1,16 @@
+<Modal
+        aria-labelledby="spring-modal-title"
+        aria-describedby="spring-modal-description"
+        className={classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500
+        }}
+      >
+        <Fade in={open}>
+         
+        </Fade>
+      </Modal>
