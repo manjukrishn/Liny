@@ -20,6 +20,10 @@ export default function Upload(imageId, filename, extension) {
     };
     let uploadTask = storageRef
       .child(`images/${imageId}`)
-      .put(filename, metadata);
+      .put(filename, metadata)
+      .then((snapshot) => {
+        return snapshot.ref.getDownloadURL();
+      });
+    return uploadTask;
   }
 }

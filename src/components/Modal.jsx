@@ -1,51 +1,32 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardMedia from "@material-ui/core/CardMedia";
-import CardContent from "@material-ui/core/CardContent";
-import TextField from "@material-ui/core/TextField";
+import React, { useRef } from "react";
+import CloseIcon from "@material-ui/icons/Close";
 import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 import firestore from "./firestore";
+import Loading from "./Loading";
 import db from "./firebase";
 import { useHistory } from "react-router-dom";
 
-export default function Post(props) {
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      maxWidth: 450,
-      height: "auto"
-    },
-    media: {
-      height: 0,
-      paddingTop: "56.25%" // 16:9
-    },
-    grow: {
-      flexGrow: 1
-    },
-    title: {
-      display: "none",
-      [theme.breakpoints.up("sm")]: {
-        display: "block"
-      }
-    },
-    sectionDesktop: {
-      display: "none",
-      [theme.breakpoints.up("md")]: {
-        display: "flex"
-      }
-    },
-    sectionMobile: {
-      display: "flex",
-      [theme.breakpoints.up("md")]: {
-        display: "none"
-      }
-    }
-  }));
-  const [postContent, setPostContent] = React.useState({ content: "" });
-  const [image, setImage] = React.useState({ preview: "", raw: "" });
-  const userId = localStorage.getItem("googleId");
+export default function Modal(props) {
   const [validExtension, setValidExtenstion] = React.useState(1);
-  const history = useHistory();
+  const [image, setImage] = React.useState({ preview: "", raw: "" });
+  const [postContent, setPostContent] = React.useState({ content: "" });
+  const userId = localStorage.getItem("googleId");
+  const postRef = useRef();
+
+  function isValidExtension(extension) {
+    switch (extension) {
+      case "png":
+      case "jpeg":
+      case "jpg":
+      case "svg":
+        setValidExtenstion(1);
+        return true;
+      default:
+        setValidExtenstion(0);
+        return false;
+    }
+  }
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -53,9 +34,16 @@ export default function Post(props) {
       return { ...prev, [name]: value };
     });
   }
+  const clickOutside = (e) => {
+    if (!postRef.current.contains(e.target)) {
+      props.close();
+    }
+  };
 
   function handlePostClick() {
     if (postContent.content && image.raw) {
+      props.close();
+      alert("Refresh to see the new post!");
       const fName = localStorage.getItem("userFName");
       const sName = localStorage.getItem("userSName");
       const time = Date.now().toString();
@@ -78,30 +66,17 @@ export default function Post(props) {
                   author: fName + " " + sName,
                   postImage: url,
                   like: []
-                });
+                })
+                .then(() => {});
             }
           });
         });
         setPostContent({ content: "" });
         setImage({ preview: "", raw: "" });
-        props.wrote();
-        history.push("/");
       });
     }
   }
-  function isValidExtension(extension) {
-    switch (extension) {
-      case "png":
-      case "jpeg":
-      case "jpg":
-      case "svg":
-        setValidExtenstion(1);
-        return true;
-      default:
-        setValidExtenstion(0);
-        return false;
-    }
-  }
+
   function handleImage(e) {
     if (e.target.files.length) {
       const arr = e.target.files[0].name.split(".");
@@ -112,48 +87,25 @@ export default function Post(props) {
         });
     }
   }
-  const classes = useStyles();
-
-  const renderMobileMenu = (
-    <div
-      className={classes.sectionMobile}
-      style={{ marginLeft: "2%", marginTop: "5%" }}
-    >
-      {!!validExtension ? (
-        <Button
-          variant="contained"
-          color="secondary"
-          size="small"
-          onClick={handlePostClick}
-          style={{ borderRadius: "20px" }}
-        >
-          Post This
-        </Button>
-      ) : (
-        <Button
-          variant="contained"
-          color="secondary"
-          size="small"
-          style={{ borderRadius: "20px" }}
-          disabled
-        >
-          Post This
-        </Button>
-      )}
-    </div>
-  );
+  React.useEffect(() => {
+    document.addEventListener("mousedown", clickOutside);
+    return () => document.removeEventListener("mousedown", clickOutside);
+  });
 
   return (
-    <div>
-      <Card className={classes.root}>
-        <CardContent>
-          {image.raw && (
-            <CardMedia
-              className={classes.media}
-              image={image.preview}
-              title="Paella dish"
-            />
-          )}
+    <div className="modal-container" id="modal">
+      <div className="modal-content" ref={postRef}>
+        <CloseIcon
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            props.close();
+          }}
+        />
+        <p style={{ width: "100%" }}>
+          {
+            image.raw && <img src={image.preview} alt="preview" />
+            /*need to be corrected */
+          }
 
           {!!validExtension ? (
             <div>
@@ -184,56 +136,43 @@ export default function Post(props) {
               </div>
             </div>
           )}
-        </CardContent>
-        <form
-          noValidate
-          autoComplete="off"
-          style={{
-            width: "100%",
-            height: "auto"
-          }}
-        >
           <TextField
-            onChange={handleChange}
-            id="outlined-multiline-static"
-            style={{ width: "100%", height: "auto" }}
+            style={{
+              width: "100%",
+              height: "auto"
+            }}
             multiline
             rows={5}
+            variant="outlined"
             name="content"
-            value={postContent.content}
             placeholder="Write Something..."
+            onChange={handleChange}
+            value={postContent.content}
           />
-        </form>
-      </Card>
-      <div className={classes.grow}>
-        <div className={classes.grow} />
-        <div
-          className={classes.sectionDesktop}
-          style={{ marginLeft: "1%", marginTop: "2%" }}
-        >
-          {!!validExtension ? (
+          {!validExtension && (
             <Button
               variant="contained"
               color="secondary"
               size="small"
-              onClick={handlePostClick}
-              style={{ borderRadius: "20px" }}
-            >
-              Post This
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              color="secondary"
-              size="small"
-              style={{ borderRadius: "20px" }}
               disabled
+              style={{ marginTop: "20px" }}
             >
               Post This
             </Button>
           )}
-        </div>
-        {renderMobileMenu}
+
+          {!!validExtension && (
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              style={{ marginTop: "20px" }}
+              onClick={handlePostClick}
+            >
+              Post This
+            </Button>
+          )}
+        </p>
       </div>
     </div>
   );

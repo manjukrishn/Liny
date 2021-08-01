@@ -124,6 +124,7 @@ function SignIn(props) {
             }
           });
         });
+        localStorage.setItem("isLogin", true);
         history.push("home");
       })
       .catch((err) => console.log(err.message));

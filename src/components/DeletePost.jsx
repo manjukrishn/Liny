@@ -12,54 +12,45 @@ import deletePost from "./deletePost";
 import { useCollection, useDocument } from "react-firebase-hooks/firestore";
 
 export default function DeletPost(props) {
-  const [open, setOpen] = React.useState(false);
   const [val, load, error] = useCollection(db.collection("comment"));
-  const handleOpen = () => {
-    setOpen(true);
-  };
+
   const handleClose = () => {
-    setOpen(false);
+    props.close();
   };
 
   const handleDeletePost = () => {
-    deletePost(props.postId);
-    if (!load) {
-      val.docs.map((item) => {
-        if (item.data().postId === props.postId) {
-          db.collection("comment")
-            .doc(item.id)
-            .delete()
-            .then(function () {
-              console.log("Document successfully deleted!");
-            })
-            .catch(function (error) {
-              console.error("Error removing document: ", error);
-            });
-        }
-      });
-    }
-    db.collection("post")
-      .doc(props.postId)
-      .delete()
-      .then(function () {
-        console.log("Document successfully deleted!");
-      })
-      .catch(function (error) {
-        console.error("Error removing document: ", error);
-      });
-    setOpen(false);
+    deletePost(props.postId).then(() => {
+      if (!load) {
+        val.docs.map((item) => {
+          if (item.data().postId === props.postId) {
+            db.collection("comment")
+              .doc(item.id)
+              .delete()
+              .then(function () {
+                console.log("Document successfully deleted!");
+              })
+              .catch(function (error) {
+                console.error("Error removing document: ", error);
+              });
+          }
+        });
+      }
+      db.collection("post")
+        .doc(props.postId)
+        .delete()
+        .then(function () {
+          console.log("Document successfully deleted!");
+        })
+        .catch(function (error) {
+          console.error("Error removing document: ", error);
+        });
+      handleClose();
+    });
   };
   return (
-    <div style={{ display: "inline-block" }}>
-      <IconButton
-        aria-label="settings"
-        onClick={handleOpen}
-        style={{ marginLeft: "-15%" }}
-      >
-        <DeleteIcon />
-      </IconButton>
+    <div>
       <Dialog
-        open={open}
+        open={props.open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"

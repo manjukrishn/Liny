@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import InputBase from "@material-ui/core/InputBase";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import {isLogin} from "../utils";
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreIcon from "@material-ui/icons/MoreVert";
@@ -84,7 +85,7 @@ export default function TopBar(props) {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const history = useHistory();
-  const auth = localStorage.getItem("authenticate");
+  const auth = isLogin();
   const fName = localStorage.getItem("userFName");
   const userId = localStorage.getItem("googleId");
 
@@ -249,7 +250,7 @@ export default function TopBar(props) {
                   }}
                   onClick={() => {
                     history.push("/login");
-                    localStorage.setItem("authenticate", 0);
+                    localStorage.setItem("isLogin", false);
                   }}
                 >
                   LOGOUT

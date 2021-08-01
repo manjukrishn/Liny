@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
-import PersonIcon from '@material-ui/icons/Person';
+import PersonIcon from "@material-ui/icons/Person";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -34,8 +34,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100%"
   },
   media: {
-    height: 0,
-    paddingTop: "56.25%" // 16:9
+    height: 300
   },
   expand: {
     transform: "rotate(0deg)",
@@ -73,7 +72,7 @@ export default function Post(props) {
   const [isAvailable, setAvailable] = React.useState(false);
   const [image, setImage] = React.useState({ preview: props.img, raw: "" });
   const [liked, setLiked] = React.useState(false);
-  const history=useHistory();
+  const history = useHistory();
   React.useEffect(() => {
     navigator.share && setAvailable(true);
     if (props.like) {
@@ -180,15 +179,19 @@ export default function Post(props) {
       <Card className={classes.root}>
         <CardHeader
           avatar={
-            <Avatar aria-label="recipe" style={{cursor:"pointer"}} onClick={() => {
-              history.push(`/profile/${props.userId}`);
-            }} >
-              <PersonIcon/>
+            <Avatar
+              aria-label="recipe"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                history.push(`/profile/${props.userId}`);
+              }}
+            >
+              <PersonIcon />
             </Avatar>
           }
           action={
             props.userId === userId && (
-              <div style={{marginLeft:"-15%"}}>
+              <div style={{ marginLeft: "-15%" }}>
                 <IconButton
                   onClick={() => {
                     setEditable(!edit);
@@ -200,12 +203,31 @@ export default function Post(props) {
               </div>
             )
           }
-          title={<div style={{cursor:"pointer"}} onClick={() => {
-            history.push(`/profile/${props.userId}`);
-          }}>{props.author}</div>}
+          title={
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                history.push(`/profile/${props.userId}`);
+              }}
+            >
+              {props.author}
+            </div>
+          }
           subheader={getDate()}
         />
-        <CardMedia className={classes.media} image={image.preview} />
+        <div className={classes.media}>
+          <img
+            src={image.preview}
+            style={{
+              padding: 0,
+              display: "block",
+              margin: "0 auto",
+              maxHeight: "100%",
+              maxWidth: "100%"
+            }}
+            alt="preview"
+          />
+        </div>
         {!!edit &&
           (!!validExtension ? (
             <div>
@@ -385,21 +407,21 @@ export default function Post(props) {
               </Typography>
             )}
             <Collapse in={expandedComments} timeout="auto" unmountOnExit>
-                {value.docs.map((item, index) => {
-                  if (item.data().comment_description)
-                    return (
-                      <div>
-                        <Comment
-                          desc={item.data().comment_description}
-                          date={item.data().comment_date}
-                          author={item.data().author}
-                          userId={item.data().author_id}
-                          commentId={item.id}
-                        />
-                        {value.docs.length - 1 !== index && <hr></hr>}
-                      </div>
-                    );
-                })}
+              {value.docs.map((item, index) => {
+                if (item.data().comment_description)
+                  return (
+                    <div>
+                      <Comment
+                        desc={item.data().comment_description}
+                        date={item.data().comment_date}
+                        author={item.data().author}
+                        userId={item.data().author_id}
+                        commentId={item.id}
+                      />
+                      {value.docs.length - 1 !== index && <hr></hr>}
+                    </div>
+                  );
+              })}
             </Collapse>
           </CardContent>
         ) : (

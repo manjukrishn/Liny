@@ -49,9 +49,9 @@ export default function Share(props) {
   };
   const url = window.location.href + "/post/" + props.postId;
   return (
-    <div>
+    <div style={{ marginTop: "-48px", marginLeft: "50px" }}>
       <IconButton onClick={handleOpen}>
-        <ShareIcon size={32} round={true} style={{ color: "#ff9100" }} />
+        <ShareIcon round={true} style={{ color: "black" }} />
       </IconButton>
       <Modal
         aria-labelledby="spring-modal-title"
@@ -75,7 +75,6 @@ export default function Share(props) {
                     quote={`Share this post by ${props.author}`}
                     style={{
                       display: "block",
-                      whiteSpace: "nowrap",
                       outline: "none"
                     }}
                   >
@@ -84,7 +83,7 @@ export default function Share(props) {
                 </td>
                 <td
                   style={{
-                    padding: "10%",
+                    padding: "3%",
                     fontSize: "14px",
                     whiteSpace: "nowrap"
                   }}
@@ -196,7 +195,7 @@ export default function Share(props) {
                 </td>
                 <td
                   style={{
-                    padding: "10%",
+                    padding: "5%",
                     fontSize: "14px",
                     whiteSpace: "nowrap"
                   }}
@@ -267,7 +266,7 @@ export default function Share(props) {
                 </td>
                 <td
                   style={{
-                    padding: "10%",
+                    padding: "1%",
                     fontSize: "14px",
                     whiteSpace: "nowrap",
                     fontWeight: "550"

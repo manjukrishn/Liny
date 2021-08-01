@@ -20,8 +20,11 @@ export default function Share(props) {
     }
   };
   return (
-    <IconButton onClick={handleShare}>
-      <ShareIcon style={{ color: "#ff9100" }} />
+    <IconButton
+      onClick={handleShare}
+      style={{ marginTop: "-48px", marginLeft: "50px" }}
+    >
+      <ShareIcon style={{ color: "black" }} />
     </IconButton>
   );
 }

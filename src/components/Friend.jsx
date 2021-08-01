@@ -59,7 +59,7 @@ export default function SimpleCard() {
   return !loading1 || !loading2 ? (
     <div
       style={{
-        marginTop: "100px",
+        marginTop: "80px",
         width: "90%",
         marginLeft: "2%",
         height: "100%",
@@ -77,7 +77,7 @@ export default function SimpleCard() {
             {" "}
             <h3
               style={{
-                marginBottom: "2%",
+                marginBottom: "10px",
                 fontSize: "24px",
                 marginRight: "5%"
               }}
@@ -163,14 +163,14 @@ export default function SimpleCard() {
           container
           justify="center"
           style={{
-            marginTop: "15px"
+            marginTop: "20px"
           }}
         >
           <Grid
             item
             style={{
               fontSize: "24px",
-              marginBottom: "7%",
+              marginBottom: "20px",
               fontWeight: "550"
             }}
           >
@@ -178,12 +178,7 @@ export default function SimpleCard() {
               ? "Try making new friends!"
               : "Suggested friends"}
           </Grid>
-          <Grid
-            spacing={2}
-            container
-            justify="center"
-            style={{ marginLeft: "3%" }}
-          >
+          <Grid spacing={2} container justify="center">
             {reqSugArr.map((item, index) => {
               return (
                 <Grid
